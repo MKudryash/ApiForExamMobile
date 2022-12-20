@@ -24,7 +24,7 @@ namespace ApiForExamMobile.Controllers
         {
             return Ok(db.TableGames.ToList().ConvertAll(x => new classTableGames(x)));
         }
-        [Route("api/Movies/sortByMovies")]
+        [Route("api/TableGames/sortByTableGames")]
         [HttpGet] // There are HttpGet, HttpPost, HttpPut, HttpDelete.
         public async Task<IHttpActionResult> SortByCostOrAvailabilityInTheStore(int typeOfSort, string nameProduct)
         {
