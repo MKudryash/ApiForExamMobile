@@ -6,6 +6,8 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ApiForExamMobile.Models;
@@ -21,6 +23,26 @@ namespace ApiForExamMobile.Controllers
         public IHttpActionResult GetUsers()
         {
             return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)));
+        }
+        [Route("api/BuildingMaterials/sortByBuildingMaterials")]
+        [HttpGet] // There are HttpGet, HttpPost, HttpPut, HttpDelete.
+        public async Task<IHttpActionResult> SortByCostOrAvailabilityInTheStore(int typeOfSort, string nameProduct)
+        {
+            Regex checkName = new Regex($@"{nameProduct}.*");
+            switch (typeOfSort)
+            {
+                case 0:
+                    return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)).Where(x => checkName.IsMatch(x.Title)));
+                case 1:
+                    return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)).Where(x => checkName.IsMatch(x.Title)).OrderBy(x => x.Cost));
+                case 2:
+                    return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)).Where(x => checkName.IsMatch(x.Title)).OrderByDescending(x => x.Cost));
+                case 3:
+                    return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)).Where(x => checkName.IsMatch(x.Title)).OrderBy(x => x.AvailabilityInTheStore));
+                case 4:
+                    return Ok(db.BuildingMaterials.ToList().ConvertAll(x => new classBuildingMaterials(x)).Where(x => checkName.IsMatch(x.Title)).OrderByDescending(x => x.AvailabilityInTheStore));
+                default: return BadRequest();
+            }
         }
 
         // GET: api/BuildingMaterials/5
